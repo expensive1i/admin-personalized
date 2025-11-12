@@ -1,0 +1,75 @@
+[
+  {
+    "id": "1",
+    "type": "transaction",
+    "title": "Payment Received",
+    "description": "From Emmanuel Johnson",
+    "amount": "₦50,000.00",
+    "time": "2 hours ago",
+    "status": "completed"
+  },
+  {
+    "id": "2",
+    "type": "user",
+    "title": "New User Registration",
+    "description": "Chioma Okafor registered",
+    "amount": null,
+    "time": "5 hours ago",
+    "status": "completed"
+  },
+  {
+    "id": "3",
+    "type": "transaction",
+    "title": "Payment Sent",
+    "description": "To Bola Adeoye",
+    "amount": "₦25,000.00",
+    "time": "1 day ago",
+    "status": "completed"
+  },
+  {
+    "id": "4",
+    "type": "ticket",
+    "title": "Support Ticket Opened",
+    "description": "Ticket #1234 - Account verification",
+    "amount": null,
+    "time": "2 days ago",
+    "status": "pending"
+  },
+  {
+    "id": "5",
+    "type": "transaction",
+    "title": "Payment Received",
+    "description": "From Grace Umeh",
+    "amount": "₦15,000.00",
+    "time": "2 days ago",
+    "status": "completed"
+  },
+  {
+    "id": "6",
+    "type": "user",
+    "title": "Account Suspended",
+    "description": "David Etim account suspended",
+    "amount": null,
+    "time": "3 days ago",
+    "status": "completed"
+  },
+  {
+    "id": "7",
+    "type": "transaction",
+    "title": "Payment Sent",
+    "description": "To Olamide Bassey",
+    "amount": "₦10,000.00",
+    "time": "3 days ago",
+    "status": "completed"
+  },
+  {
+    "id": "8",
+    "type": "transaction",
+    "title": "Payment Received",
+    "description": "From Kelechi Nwosu",
+    "amount": "₦30,000.00",
+    "time": "4 days ago",
+    "status": "completed"
+  }
+]
+
