@@ -6,7 +6,7 @@ import StatsCardSkeleton from '../components/skeletal-ui/StatsCardSkeleton'
 import RecentActivity from '../components/RecentActivity'
 import RecentActivitySkeleton from '../components/skeletal-ui/RecentActivitySkeleton'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { UserGroupIcon, TransactionHistoryIcon, Notification01Icon, Wallet03Icon } from '@hugeicons/core-free-icons'
+import { UserGroupIcon, TransactionHistoryIcon, BarChartIcon, Wallet03Icon } from '@hugeicons/core-free-icons'
 import { type ActivityItem } from '../components/RecentActivity'
 import { getDashboardStats } from '../services/statsService'
 import { getRecentActivities } from '../services/activityService'
@@ -15,6 +15,39 @@ function HomePage() {
   const [activities, setActivities] = useState<ActivityItem[]>([])
   const [loadingStats, setLoadingStats] = useState(true)
   const [loadingActivities, setLoadingActivities] = useState(true)
+
+  const formatCurrencyValue = (amount: number) => {
+    const thresholds = [
+      { value: 1_000_000_000, suffix: 'B' },
+      { value: 1_000_000, suffix: 'M' },
+      { value: 1_000, suffix: 'K' }
+    ]
+
+    const absAmount = Math.abs(amount)
+    for (const threshold of thresholds) {
+      if (absAmount >= threshold.value) {
+        const scaled = amount / threshold.value
+        const absScaled = Math.abs(scaled)
+        let fractionDigits = 2
+        if (absScaled >= 100) {
+          fractionDigits = 0
+        } else if (absScaled >= 10) {
+          fractionDigits = 1
+        }
+
+        return `₦${scaled.toLocaleString('en-NG', {
+          minimumFractionDigits: fractionDigits,
+          maximumFractionDigits: fractionDigits
+        })}${threshold.suffix}`
+      }
+    }
+
+    return `₦${amount.toLocaleString('en-NG', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })}`
+  }
+
   const [stats, setStats] = useState<Array<StatsCardProps & { id: string }>>([
     {
       id: 'users',
@@ -26,23 +59,23 @@ function HomePage() {
     {
       id: 'transactions',
       title: 'Transactions',
-      value: '₦0.00',
+      value: formatCurrencyValue(0),
       subtitle: 'Past 30 days',
       icon: <HugeiconsIcon icon={TransactionHistoryIcon} className="w-24 h-24 text-inherit" />
     },
     {
       id: 'balance',
       title: 'Total Balance',
-      value: '₦0.00',
+      value: formatCurrencyValue(0),
       subtitle: 'Across all accounts',
       icon: <HugeiconsIcon icon={Wallet03Icon} className="w-24 h-24 text-inherit" />
     },
     {
-      id: 'tickets',
-      title: 'Open Tickets',
+      id: 'accounts',
+      title: 'Total Accounts',
       value: '0',
-      subtitle: 'Requiring attention',
-      icon: <HugeiconsIcon icon={Notification01Icon} className="w-24 h-24 text-inherit" />
+      subtitle: 'Across all users',
+      icon: <HugeiconsIcon icon={BarChartIcon} className="w-24 h-24 text-inherit" />
     }
   ])
   useEffect(() => {
@@ -50,11 +83,6 @@ function HomePage() {
       try {
         setLoadingStats(true)
         const dashboardStats = await getDashboardStats()
-
-        // Format numbers
-        const formatCurrency = (amount: number) => {
-          return `₦${amount.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-        }
 
         setStats([
           {
@@ -67,23 +95,23 @@ function HomePage() {
           {
             id: 'transactions',
             title: 'Transactions',
-            value: formatCurrency(dashboardStats.totalTransactions),
+            value: formatCurrencyValue(dashboardStats.totalTransactions),
             subtitle: 'Past 30 days',
             icon: <HugeiconsIcon icon={TransactionHistoryIcon} className="w-24 h-24 text-inherit" />
           },
           {
             id: 'balance',
             title: 'Total Balance',
-            value: formatCurrency(dashboardStats.totalBalance),
+            value: formatCurrencyValue(dashboardStats.totalBalance),
             subtitle: 'Across all accounts',
             icon: <HugeiconsIcon icon={Wallet03Icon} className="w-24 h-24 text-inherit" />
           },
           {
-            id: 'tickets',
-            title: 'Open Tickets',
-            value: dashboardStats.openTickets.toString(),
-            subtitle: 'Requiring attention',
-            icon: <HugeiconsIcon icon={Notification01Icon} className="w-24 h-24 text-inherit" />
+            id: 'accounts',
+            title: 'Total Accounts',
+            value: dashboardStats.totalAccounts.toString(),
+            subtitle: 'Across all users',
+            icon: <HugeiconsIcon icon={BarChartIcon} className="w-24 h-24 text-inherit" />
           }
         ])
       } catch (error) {

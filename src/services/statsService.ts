@@ -6,7 +6,7 @@ export interface DashboardStats {
   totalUsers: number
   totalTransactions: number
   totalBalance: number
-  openTickets: number
+  totalAccounts: number
 }
 
 /**
@@ -39,19 +39,15 @@ export async function getDashboardStats(): Promise<DashboardStats> {
       return sum + userTransactions
     }, 0)
 
-    // Calculate open tickets (pending bill payments)
-    const openTickets = users.reduce((sum, user) => {
-      const pendingPayments = user.billPayments?.filter(
-        (payment) => payment.status === 'pending'
-      ).length || 0
-      return sum + pendingPayments
+    const totalAccounts = users.reduce((sum, user) => {
+      return sum + (user.accounts?.length || 0)
     }, 0)
 
     return {
       totalUsers,
       totalTransactions,
       totalBalance,
-      openTickets,
+      totalAccounts,
     }
   } catch (error) {
     console.error('Error fetching dashboard stats:', error)
