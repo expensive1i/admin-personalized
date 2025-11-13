@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Cancel01Icon } from '@hugeicons/core-free-icons'
 import { type ApiUser } from '../types/user'
@@ -12,6 +12,77 @@ interface SideModalProps {
 
 function SideModal({ isOpen, onClose, user, loading = false }: SideModalProps) {
   const [isAnimating, setIsAnimating] = useState(false)
+
+  const formatRelativeTime = (dateString?: string | null) => {
+    if (!dateString) return '—'
+    const date = new Date(dateString)
+    if (Number.isNaN(date.getTime())) return '—'
+
+    const now = new Date()
+    const diffInMs = now.getTime() - date.getTime()
+    const diffInMinutes = Math.floor(diffInMs / (1000 * 60))
+    const diffInHours = Math.floor(diffInMinutes / 60)
+    const diffInDays = Math.floor(diffInHours / 24)
+
+    if (diffInDays > 0) {
+      return `${diffInDays} day${diffInDays === 1 ? '' : 's'} ago`
+    }
+    if (diffInHours > 0) {
+      return `${diffInHours} hour${diffInHours === 1 ? '' : 's'} ago`
+    }
+    if (diffInMinutes > 0) {
+      return `${diffInMinutes} minute${diffInMinutes === 1 ? '' : 's'} ago`
+    }
+    return 'Just now'
+  }
+
+  const userActivities = useMemo(() => {
+    if (!user) return []
+
+    const activities: Array<{
+      id: string
+      title: string
+      description: string
+      amount: number
+      status: string
+      kind: 'transaction' | 'bill'
+      direction?: 'credit' | 'debit'
+      timestamp: string | null
+    }> = []
+
+    user.transactions?.forEach((transaction) => {
+      activities.push({
+        id: `txn-${transaction.id}`,
+        title: transaction.receiverName || 'Transaction',
+        description: `${transaction.transactionType === 'credit' ? 'Credit' : 'Debit'} • ${transaction.reference}`,
+        amount: transaction.amount,
+        status: transaction.status || 'pending',
+        kind: 'transaction',
+        direction: transaction.transactionType === 'credit' ? 'credit' : 'debit',
+        timestamp: transaction.transactionDate || transaction.createdAt || null,
+      })
+    })
+
+    user.billPayments?.forEach((payment) => {
+      activities.push({
+        id: `bill-${payment.id}`,
+        title: `${payment.paymentType?.toUpperCase() || 'Bill'} • ${payment.provider || 'Provider'}`,
+        description: `Reference • ${payment.reference}`,
+        amount: payment.amount,
+        status: payment.status || 'pending',
+        kind: 'bill',
+        timestamp: payment.paymentDate || payment.createdAt || null,
+      })
+    })
+
+    activities.sort((a, b) => {
+      const timeA = a.timestamp ? new Date(a.timestamp).getTime() : 0
+      const timeB = b.timestamp ? new Date(b.timestamp).getTime() : 0
+      return timeB - timeA
+    })
+
+    return activities.slice(0, 6)
+  }, [user])
 
   useEffect(() => {
     if (isOpen) {
@@ -212,10 +283,40 @@ function SideModal({ isOpen, onClose, user, loading = false }: SideModalProps) {
                 {/* Recent Activity */}
                 <div className="space-y-2">
                   <h4 className="text-xs font-semibold text-gray-900 uppercase tracking-wide">Recent Activity</h4>
-                  
-                  <div className="bg-white border border-gray-200 rounded-lg p-4 text-center text-gray-500">
-                    <p className="text-xs">No recent activity to display</p>
-                  </div>
+                  {userActivities.length === 0 ? (
+                    <div className="bg-white border border-gray-200 rounded-lg p-4 text-center text-gray-500">
+                      <p className="text-xs">No recent activity to display</p>
+                    </div>
+                  ) : (
+                    <div className="bg-white border border-gray-200 rounded-lg divide-y divide-gray-200">
+                      {userActivities.map((activity) => {
+                        const amountFormatted = `${activity.direction === 'debit' ? '-' : ''}₦${activity.amount.toLocaleString('en-NG', {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}`
+                        const amountColor =
+                          activity.direction === 'credit'
+                            ? 'text-green-600'
+                            : activity.direction === 'debit'
+                              ? 'text-red-500'
+                              : 'text-gray-800'
+
+                        return (
+                          <div key={activity.id} className="flex items-start justify-between gap-4 p-3">
+                            <div className="space-y-1">
+                              <p className="text-xs font-semibold text-gray-900">{activity.title}</p>
+                              <p className="text-[11px] text-gray-500">{activity.description}</p>
+                              <p className="text-[11px] text-gray-400">{formatRelativeTime(activity.timestamp)}</p>
+                            </div>
+                            <div className="text-right space-y-1">
+                              <p className={`text-xs font-semibold ${amountColor}`}>{amountFormatted}</p>
+                              <p className="text-[11px] uppercase tracking-wide text-gray-400">{activity.status}</p>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
                 </div>
               </>
             ) : null}
