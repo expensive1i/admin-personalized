@@ -74,7 +74,6 @@ function AnalyticsPage() {
       fontFamily: 'Poppins, sans-serif',
       animations: {
         enabled: true,
-        easing: 'easeinout',
         speed: 800,
       },
     },
@@ -96,12 +95,13 @@ function AnalyticsPage() {
         colors: ['#374151'],
       },
       formatter: (val) => {
-        if (val >= 1000000) {
-          return `₦${(val / 1000000).toFixed(1)}M`
-        } else if (val >= 1000) {
-          return `₦${(val / 1000).toFixed(1)}K`
+        const numVal = typeof val === 'number' ? val : Array.isArray(val) ? val[0] : parseFloat(String(val)) || 0
+        if (numVal >= 1000000) {
+          return `₦${(numVal / 1000000).toFixed(1)}M`
+        } else if (numVal >= 1000) {
+          return `₦${(numVal / 1000).toFixed(1)}K`
         }
-        return `₦${val.toFixed(0)}`
+        return `₦${numVal.toFixed(0)}`
       },
     },
     xaxis: {
@@ -191,14 +191,13 @@ function AnalyticsPage() {
       fontFamily: 'Poppins, sans-serif',
       animations: {
         enabled: true,
-        easing: 'easeinout',
         speed: 800,
       },
     },
     labels: chartData.map((item) => item.name),
     dataLabels: {
       enabled: true,
-      formatter: (val, opts) => {
+      formatter: (_val, opts) => {
         const value = opts.w.globals.series[opts.seriesIndex]
         if (value >= 1000000) {
           return `₦${(value / 1000000).toFixed(1)}M`
@@ -225,9 +224,7 @@ function AnalyticsPage() {
       fontSize: '12px',
       fontWeight: 500,
       markers: {
-        width: 12,
-        height: 12,
-        radius: 6,
+        size: 12,
       },
       itemMargin: {
         horizontal: 8,
@@ -253,7 +250,7 @@ function AnalyticsPage() {
               fontWeight: 700,
               color: '#111827',
               offsetY: 10,
-              formatter: (val) => {
+              formatter: () => {
                 const total = balanceSeries.reduce((sum, value) => sum + value, 0)
                 if (total >= 1000000) {
                   return `₦${(total / 1000000).toFixed(1)}M`
@@ -360,7 +357,6 @@ function AnalyticsPage() {
       fontFamily: 'Poppins, sans-serif',
       animations: {
         enabled: true,
-        easing: 'easeinout',
         speed: 800,
       },
     },
