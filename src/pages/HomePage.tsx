@@ -71,10 +71,10 @@ function HomePage() {
       icon: <HugeiconsIcon icon={Wallet03Icon} className="w-24 h-24 text-inherit" />
     },
     {
-      id: 'accounts',
-      title: 'Total Accounts',
+      id: 'analytics',
+      title: 'Analytics',
       value: '0',
-      subtitle: 'Across all users',
+      subtitle: 'Transactions & bills',
       icon: <HugeiconsIcon icon={BarChartIcon} className="w-24 h-24 text-inherit" />
     }
   ])
@@ -107,10 +107,10 @@ function HomePage() {
             icon: <HugeiconsIcon icon={Wallet03Icon} className="w-24 h-24 text-inherit" />
           },
           {
-            id: 'accounts',
-            title: 'Total Accounts',
-            value: dashboardStats.totalAccounts.toString(),
-            subtitle: 'Across all users',
+            id: 'analytics',
+            title: 'Analytics',
+            value: dashboardStats.totalActivities.toLocaleString('en-NG'),
+            subtitle: 'Transactions & bills',
             icon: <HugeiconsIcon icon={BarChartIcon} className="w-24 h-24 text-inherit" />
           }
         ])

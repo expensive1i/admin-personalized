@@ -2,13 +2,15 @@ import { NavLink } from 'react-router-dom'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { 
   Home01Icon, 
-  UserIcon
+  UserIcon,
+  BarChartIcon
 } from '@hugeicons/core-free-icons'
 
 function Sidebar() {
   const menuItems = [
     { id: 'dashboard', label: 'Home', icon: Home01Icon, to: '/dashboard' },
     { id: 'users', label: 'Users', icon: UserIcon, to: '/users' },
+    { id: 'analytics', label: 'Analytics', icon: BarChartIcon, to: '/analytics' },
   ]
 
   return (
@@ -41,7 +43,7 @@ function Sidebar() {
                   <>
                     <HugeiconsIcon 
                       icon={item.icon} 
-                      className={`w-5 h-5 mb-1 ${isActive ? 'text-red-600' : 'text-gray-600'}`}
+                      className={`w-5 h-5 mb-1 ${item.id === 'analytics' ? 'transform -scale-y-100' : ''} ${isActive ? 'text-red-600' : 'text-gray-600'}`}
                     />
                     <span className={`text-xs ${isActive ? 'text-red-600 font-medium' : 'text-gray-600'}`}>
                       {item.label}

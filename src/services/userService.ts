@@ -42,3 +42,19 @@ export async function getUserById(id: string | number): Promise<ApiUser> {
   }
 }
 
+/**
+ * Fetch all users with full details (raw API response)
+ */
+export async function getUsersWithDetails(): Promise<GetUsersResponse> {
+  try {
+    const response = await apiRequest<GetUsersResponse>(ENDPOINTS.USERS.GET_ALL, {
+      method: 'GET',
+    })
+
+    return response.data
+  } catch (error) {
+    console.error('Error fetching users with details:', error)
+    throw error
+  }
+}
+

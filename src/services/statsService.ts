@@ -6,7 +6,7 @@ export interface DashboardStats {
   totalUsers: number
   totalTransactions: number
   totalBalance: number
-  totalAccounts: number
+  totalActivities: number
 }
 
 /**
@@ -39,15 +39,17 @@ export async function getDashboardStats(): Promise<DashboardStats> {
       return sum + userTransactions
     }, 0)
 
-    const totalAccounts = users.reduce((sum, user) => {
-      return sum + (user.accounts?.length || 0)
+    const totalActivities = users.reduce((sum, user) => {
+      const transactionsCount = user.transactions?.length || 0
+      const billPaymentsCount = user.billPayments?.length || 0
+      return sum + transactionsCount + billPaymentsCount
     }, 0)
 
     return {
       totalUsers,
       totalTransactions,
       totalBalance,
-      totalAccounts,
+      totalActivities,
     }
   } catch (error) {
     console.error('Error fetching dashboard stats:', error)
