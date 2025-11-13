@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import TopBar from '../components/TopBar'
 import UserTable from '../components/UserTable'
-import UserTableSkeleton from '../components/UserTableSkeleton'
+import UserTableSkeleton from '../components/skeletal-ui/UserTableSkeleton'
 import SideModal from '../components/SideModal'
 import ErrorDisplay from '../components/ErrorDisplay'
 import { getAllUsers, getUserById } from '../services/userService'

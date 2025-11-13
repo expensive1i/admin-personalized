@@ -14,7 +14,7 @@ function UserTableSkeleton() {
             </tr>
           </thead>
           <tbody>
-            {Array.from({ length: 6 }).map((_, index) => (
+            {Array.from({ length: 10 }).map((_, index) => (
               <tr key={index} className="border-b border-gray-100 last:border-0">
                 <td className="py-4 px-4 align-middle">
                   <div className="h-4 w-8 bg-gray-200 rounded animate-pulse"></div>

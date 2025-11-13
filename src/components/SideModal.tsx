@@ -60,9 +60,66 @@ function SideModal({ isOpen, onClose, user, loading = false }: SideModalProps) {
           {/* Content */}
           <div className="flex-1 p-5 space-y-4">
             {loading ? (
-              <div className="flex items-center justify-center py-12">
-                <p className="text-sm text-gray-500">Loading user details...</p>
-              </div>
+              <>
+                {/* Profile Section Skeleton */}
+                <div className="flex items-center gap-3 pb-4 border-b border-gray-200">
+                  <div className="h-12 w-12 rounded-full bg-gray-200 animate-pulse"></div>
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="h-3 w-24 bg-gray-200 rounded animate-pulse"></div>
+                  </div>
+                </div>
+
+                {/* Account Balance Skeleton */}
+                <div className="space-y-2">
+                  <div className="h-3 w-32 bg-gray-200 rounded animate-pulse"></div>
+                  <div className="bg-gray-200 rounded-lg p-4 space-y-2 animate-pulse">
+                    <div className="h-3 w-20 bg-gray-300 rounded"></div>
+                    <div className="h-8 w-40 bg-gray-300 rounded"></div>
+                    <div className="h-3 w-24 bg-gray-300 rounded"></div>
+                  </div>
+                </div>
+
+                {/* Account Information Skeleton */}
+                <div className="space-y-2">
+                  <div className="h-3 w-40 bg-gray-200 rounded animate-pulse"></div>
+                  <div className="bg-white border border-gray-200 rounded-lg divide-y divide-gray-200">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div key={i} className="p-3 flex justify-between items-center">
+                        <div className="h-3 w-24 bg-gray-200 rounded animate-pulse"></div>
+                        <div className="h-3 w-32 bg-gray-200 rounded animate-pulse"></div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* All Accounts Skeleton */}
+                <div className="space-y-2">
+                  <div className="h-3 w-28 bg-gray-200 rounded animate-pulse"></div>
+                  <div className="bg-white border border-gray-200 rounded-lg divide-y divide-gray-200">
+                    {[1, 2].map((i) => (
+                      <div key={i} className="p-3 flex justify-between items-center">
+                        <div className="flex-1 space-y-2">
+                          <div className="h-3 w-32 bg-gray-200 rounded animate-pulse"></div>
+                          <div className="h-3 w-20 bg-gray-200 rounded animate-pulse"></div>
+                        </div>
+                        <div className="text-right space-y-2">
+                          <div className="h-3 w-24 bg-gray-200 rounded animate-pulse"></div>
+                          <div className="h-3 w-12 bg-gray-200 rounded animate-pulse"></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Recent Activity Skeleton */}
+                <div className="space-y-2">
+                  <div className="h-3 w-32 bg-gray-200 rounded animate-pulse"></div>
+                  <div className="bg-white border border-gray-200 rounded-lg p-4">
+                    <div className="h-3 w-48 bg-gray-200 rounded animate-pulse mx-auto"></div>
+                  </div>
+                </div>
+              </>
             ) : user ? (
               <>
                 {/* Profile Section */}

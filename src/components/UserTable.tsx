@@ -20,7 +20,7 @@ const formatDate = (value: string) => {
   }).format(parsed)
 }
 
-function UserTable({ users, pageSize = 6, onViewUser }: UserTableProps) {
+function UserTable({ users, pageSize = 10, onViewUser }: UserTableProps) {
   const [page, setPage] = useState(1)
 
   const totalPages = Math.max(1, Math.ceil(users.length / pageSize))

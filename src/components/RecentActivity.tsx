@@ -1,7 +1,5 @@
 import { HugeiconsIcon } from '@hugeicons/react'
 import { 
-  ArrowDown02Icon, 
-  ArrowUp02Icon, 
   UserIcon, 
   Notification01Icon,
   TransactionHistoryIcon
