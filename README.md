@@ -36,7 +36,7 @@ Before you begin, ensure you have the following installed:
    
    Create a `.env` file in the root directory:
    ```env
-   VITE_API_BASE_URL=https://personalize-production-8a33.up.railway.app
+   VITE_API_BASE_URL=https://personalised-ai-backend-production.up.railway.app
    ```
 
 4. **Start the development server**
@@ -95,7 +95,7 @@ The project integrates with the Natural Language Banking API. The base URL is co
 
 The API base URL is set in the `.env` file:
 ```env
-VITE_API_BASE_URL=https://personalize-production-8a33.up.railway.app
+VITE_API_BASE_URL=https://personalised-ai-backend-production.up.railway.app
 ```
 
 In development, the Vite proxy automatically forwards `/api` requests to the configured base URL, avoiding CORS issues.
@@ -203,3 +203,4 @@ For support, please contact the development team (08101854615).
 ---
 
 Made with ❤️ by **HEAT Labs**
++2348060585934

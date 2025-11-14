@@ -183,6 +183,44 @@ function AnalyticsPage() {
   }
 
   const balanceSeries = chartData.map((item) => Number(item.totalBalance.toFixed(2)))
+  
+  // Format currency helper for center display
+  const formatCenterAmount = (total: number) => {
+    const absTotal = Math.abs(total)
+    
+    if (absTotal >= 1_000_000_000) {
+      const scaled = total / 1_000_000_000
+      const absScaled = Math.abs(scaled)
+      const fractionDigits = absScaled >= 100 ? 0 : absScaled >= 10 ? 1 : 2
+      return `₦${scaled.toLocaleString('en-NG', {
+        minimumFractionDigits: fractionDigits,
+        maximumFractionDigits: fractionDigits
+      })}B`
+    } else if (absTotal >= 1_000_000) {
+      const scaled = total / 1_000_000
+      const absScaled = Math.abs(scaled)
+      const fractionDigits = absScaled >= 100 ? 0 : absScaled >= 10 ? 1 : 2
+      return `₦${scaled.toLocaleString('en-NG', {
+        minimumFractionDigits: fractionDigits,
+        maximumFractionDigits: fractionDigits
+      })}M`
+    } else if (absTotal >= 1_000) {
+      const scaled = total / 1_000
+      const absScaled = Math.abs(scaled)
+      const fractionDigits = absScaled >= 100 ? 0 : absScaled >= 10 ? 1 : 2
+      return `₦${scaled.toLocaleString('en-NG', {
+        minimumFractionDigits: fractionDigits,
+        maximumFractionDigits: fractionDigits
+      })}K`
+    }
+    return `₦${total.toLocaleString('en-NG', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })}`
+  }
+
+  const totalBalance = balanceSeries.reduce((sum, value) => sum + value, 0)
+  
   const balanceOptions: ApexOptions = {
     chart: {
       type: 'donut',
@@ -191,96 +229,70 @@ function AnalyticsPage() {
       fontFamily: 'Poppins, sans-serif',
       animations: {
         enabled: true,
-        speed: 800,
+        speed: 600,
+        animateGradually: {
+          enabled: true,
+          delay: 150,
+        },
       },
     },
     labels: chartData.map((item) => item.name),
     dataLabels: {
-      enabled: true,
-      formatter: (_val, opts) => {
-        const value = opts.w.globals.series[opts.seriesIndex]
-        if (value >= 1000000) {
-          return `₦${(value / 1000000).toFixed(1)}M`
-        } else if (value >= 1000) {
-          return `₦${(value / 1000).toFixed(1)}K`
-        }
-        return `₦${value.toFixed(0)}`
-      },
-      style: {
-        fontSize: '11px',
-        fontWeight: 600,
-        colors: ['#ffffff'],
-      },
-      dropShadow: {
-        enabled: true,
-        color: '#000',
-        blur: 3,
-        opacity: 0.3,
-      },
+      enabled: false, // Disable labels on slices for cleaner look
     },
-    colors: ['#E3000F', '#FF6B6B', '#F97316', '#0EA5E9', '#6366F1', '#14B8A6', '#8B5CF6', '#EC4899'],
+    colors: [
+      '#E3000F', // Primary red
+      '#DC2626', // Darker red
+      '#F87171', // Light red
+      '#EF4444', // Medium red
+      '#B91C1C', // Deep red
+      '#991B1B', // Very dark red
+      '#FCA5A5', // Very light red
+      '#7F1D1D', // Darkest red
+    ],
     legend: {
       position: 'bottom',
-      fontSize: '12px',
+      fontSize: '11px',
       fontWeight: 500,
       markers: {
-        size: 12,
+        size: 8,
+        shape: 'circle',
       },
       itemMargin: {
-        horizontal: 8,
-        vertical: 4,
+        horizontal: 12,
+        vertical: 6,
+      },
+      formatter: (seriesName, opts) => {
+        const value = opts.w.globals.series[opts.seriesIndex]
+        const percentage = totalBalance > 0 ? ((value / totalBalance) * 100).toFixed(1) : '0'
+        return `${seriesName} • ${percentage}%`
       },
     },
     plotOptions: {
       pie: {
         donut: {
-          size: '70%',
+          size: '75%',
           labels: {
             show: true,
             name: {
-              show: true,
-              fontSize: '14px',
-              fontWeight: 600,
-              color: '#374151',
-              offsetY: -10,
+              show: false, // Hide "Total Balance" label
             },
             value: {
               show: true,
-              fontSize: '20px',
+              fontSize: '28px',
               fontWeight: 700,
               color: '#111827',
-              offsetY: 10,
-              formatter: () => {
-                const total = balanceSeries.reduce((sum, value) => sum + value, 0)
-                if (total >= 1000000) {
-                  return `₦${(total / 1000000).toFixed(1)}M`
-                } else if (total >= 1000) {
-                  return `₦${(total / 1000).toFixed(1)}K`
-                }
-                return `₦${total.toLocaleString('en-NG', {
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: 0,
-                })}`
-              },
+              offsetY: 0,
+              formatter: () => formatCenterAmount(totalBalance),
             },
             total: {
               show: true,
               label: 'Total Balance',
-              fontSize: '12px',
-              fontWeight: 600,
-              color: '#6B7280',
-              formatter: () => {
-                const total = balanceSeries.reduce((sum, value) => sum + value, 0)
-                if (total >= 1000000) {
-                  return `₦${(total / 1000000).toFixed(1)}M`
-                } else if (total >= 1000) {
-                  return `₦${(total / 1000).toFixed(1)}K`
-                }
-                return `₦${total.toLocaleString('en-NG', {
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: 0,
-                })}`
-              },
+              fontSize: '10px',
+              fontWeight: 500,
+              color: '#9CA3AF',
+              offsetY: -30,
+              formatter: () => '',
             },
           },
         },
@@ -288,17 +300,22 @@ function AnalyticsPage() {
     },
     tooltip: {
       theme: 'light',
+      style: {
+        fontSize: '12px',
+      },
       y: {
-        formatter: (value) =>
-          `₦${value.toLocaleString('en-NG', {
+        formatter: (value) => {
+          const percentage = totalBalance > 0 ? ((value / totalBalance) * 100).toFixed(1) : '0'
+          return `₦${value.toLocaleString('en-NG', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
-          })}`,
+          })} (${percentage}%)`
+        },
       },
     },
     stroke: {
       show: true,
-      width: 2,
+      width: 3,
       colors: ['#ffffff'],
     },
   }
