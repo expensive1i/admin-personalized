@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: process.env.VITE_API_BASE_URL || 'https://personalize-production-8a33.up.railway.app',
+        target: process.env.VITE_API_BASE_URL || 'https://personalised-ai-backend-production.up.railway.app',
         changeOrigin: true,
         secure: true,
       },

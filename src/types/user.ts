@@ -80,7 +80,21 @@ export interface CreateUserRequest {
 
 export interface CreateUserResponse {
   success: boolean
-  response: string
-  data: ApiUser
+  message: string
+  data: {
+    id: number
+    customerName: string
+    phoneNumber: string
+    accountNumber: string
+    bankName: string
+    createdAt: string
+    account: {
+      id: number
+      accountNumber: string
+      balance: number
+      currency: string
+      bankName: string
+    }
+  }
 }
 

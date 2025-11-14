@@ -1,13 +1,14 @@
 // In development, use proxy (no base URL needed)
-// In production, use full URL from environment variable
+// In production, use base URL from environment variable
 const isDevelopment = import.meta.env.DEV
 const API_BASE_URL = isDevelopment 
   ? '' // Use Vite proxy in development
-  : import.meta.env.VITE_API_BASE_URL
+  : import.meta.env.VITE_API_BASE_URL || 'https://personalised-ai-backend-production.up.railway.app'
 
 export interface ApiResponse<T> {
   success: boolean
-  response: string
+  response?: string
+  message?: string
   data: T
 }
 
@@ -15,6 +16,7 @@ export async function apiRequest<T>(
   endpoint: string,
   options?: RequestInit
 ): Promise<ApiResponse<T>> {
+  // Build the full URL
   const url = `${API_BASE_URL}${endpoint}`
   
   try {
@@ -44,6 +46,10 @@ export async function apiRequest<T>(
         // If response is not JSON, use status-based messages
         if (response.status === 500) {
           errorMessage = 'Internal Server Error: The server encountered an error while processing your request.'
+        } else if (response.status === 409) {
+          errorMessage = 'Conflict: This phone number is already registered. Please use a different phone number.'
+        } else if (response.status === 400) {
+          errorMessage = 'Bad Request: Please check that all fields are filled correctly.'
         } else if (response.status === 404) {
           errorMessage = 'Not Found: The requested resource could not be found.'
         } else if (response.status === 403) {

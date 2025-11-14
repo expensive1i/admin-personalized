@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { EyeIcon, PencilEdit01Icon } from '@hugeicons/core-free-icons'
 import { type UserRecord } from '../types/user'
@@ -12,7 +12,29 @@ interface UserTableProps {
 }
 
 const formatDate = (value: string) => {
+  if (!value) return '—'
   const parsed = new Date(value)
+  if (isNaN(parsed.getTime())) return '—'
+  
+  const now = new Date()
+  const diffInMs = now.getTime() - parsed.getTime()
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24))
+  
+  // If less than 7 days ago, show relative time
+  if (diffInDays === 0) {
+    const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60))
+    if (diffInHours === 0) {
+      const diffInMinutes = Math.floor(diffInMs / (1000 * 60))
+      return diffInMinutes <= 1 ? 'Just now' : `${diffInMinutes} minutes ago`
+    }
+    return `${diffInHours} hour${diffInHours === 1 ? '' : 's'} ago`
+  } else if (diffInDays === 1) {
+    return 'Yesterday'
+  } else if (diffInDays < 7) {
+    return `${diffInDays} days ago`
+  }
+  
+  // Otherwise show formatted date
   return new Intl.DateTimeFormat('en-GB', {
     day: '2-digit',
     month: 'short',
@@ -24,6 +46,14 @@ function UserTable({ users, pageSize = 10, onViewUser }: UserTableProps) {
   const [page, setPage] = useState(1)
 
   const totalPages = Math.max(1, Math.ceil(users.length / pageSize))
+
+  // Reset to page 1 when users list changes significantly (e.g., after adding new user)
+  useEffect(() => {
+    // If we're on a page that doesn't exist anymore, go to page 1
+    if (totalPages > 0 && page > totalPages) {
+      setPage(1)
+    }
+  }, [users.length, totalPages, page])
 
   const handlePageChange = (nextPage: number) => {
     const clamped = Math.min(Math.max(nextPage, 1), totalPages)
@@ -47,7 +77,7 @@ function UserTable({ users, pageSize = 10, onViewUser }: UserTableProps) {
               <th className="py-4 px-4 text-left font-medium">#</th>
               <th className="py-4 px-4 text-left font-medium">Name</th>
               <th className="py-4 px-4 text-left font-medium">Account Number</th>
-              <th className="py-4 px-4 text-left font-medium">Email</th>
+              <th className="py-4 px-4 text-left font-medium">Phone Number</th>
               <th className="py-4 px-4 text-left font-medium">Registration Date</th>
               <th className="py-4 px-4 text-left font-medium text-right">Actions</th>
             </tr>
@@ -59,9 +89,9 @@ function UserTable({ users, pageSize = 10, onViewUser }: UserTableProps) {
                 <tr key={user.id} className="border-b border-gray-100 last:border-0 hover:bg-red-50/30 transition-colors">
                   <td className="py-4 px-4 align-middle text-gray-400">{rowNumber.toString().padStart(2, '0')}</td>
                   <td className="py-4 px-4 align-middle font-medium text-gray-900">{user.name}</td>
-                  <td className="py-4 px-4 align-middle font-mono text-gray-700">{user.accountNumber}</td>
-                  <td className="py-4 px-4 align-middle">{user.email}</td>
-                  <td className="py-4 px-4 align-middle">{formatDate(user.registrationDate)}</td>
+                  <td className="py-4 px-4 align-middle font-mono text-gray-700">{user.accountNumber || '—'}</td>
+                  <td className="py-4 px-4 align-middle text-gray-600">{user.email || '—'}</td>
+                  <td className="py-4 px-4 align-middle text-gray-600">{formatDate(user.registrationDate)}</td>
                   <td className="py-4 px-4 align-middle">
                     <div className="flex items-center justify-end gap-2">
                       <button

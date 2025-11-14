@@ -3,6 +3,7 @@ import TopBar from '../components/TopBar'
 import UserTable from '../components/UserTable'
 import UserTableSkeleton from '../components/skeletal-ui/UserTableSkeleton'
 import SideModal from '../components/SideModal'
+import AddUserModal from '../components/AddUserModal'
 import ErrorDisplay from '../components/ErrorDisplay'
 import { getAllUsers, getUserById } from '../services/userService'
 import { type UserRecord, type ApiUser } from '../types/user'
@@ -15,6 +16,7 @@ function UsersPage() {
   const [error, setError] = useState<string | null>(null)
   const [selectedUser, setSelectedUser] = useState<ApiUser | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [loadingUserDetails, setLoadingUserDetails] = useState(false)
 
   const fetchUsers = async () => {
@@ -56,6 +58,11 @@ function UsersPage() {
     setTimeout(() => setSelectedUser(null), 300)
   }
 
+  const handleAddUserSuccess = () => {
+    // Refresh the users list after successful creation
+    fetchUsers()
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <TopBar
@@ -69,6 +76,7 @@ function UsersPage() {
         <div className="flex items-center justify-between mb-8">
           <p className="text-base text-gray-600">View, manage, and monitor all registered user accounts on the platform.</p>
           <button
+            onClick={() => setIsAddModalOpen(true)}
             className="bg-[#E3000F] text-white px-6 py-2.5 flex items-center gap-2 hover:bg-[#C2000D] transition-colors font-medium text-sm"
             style={{ borderRadius: 0 }}
           >
@@ -93,6 +101,12 @@ function UsersPage() {
         onClose={handleCloseModal}
         user={selectedUser}
         loading={loadingUserDetails}
+      />
+
+      <AddUserModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSuccess={handleAddUserSuccess}
       />
     </div>
   )
