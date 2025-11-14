@@ -72,3 +72,15 @@ export interface UserRecord {
   status: string
 }
 
+export interface CreateUserRequest {
+  phoneNumber: string
+  customerName: string
+  bankName: string
+}
+
+export interface CreateUserResponse {
+  success: boolean
+  response: string
+  data: ApiUser
+}
+

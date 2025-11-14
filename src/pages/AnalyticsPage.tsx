@@ -291,7 +291,6 @@ function AnalyticsPage() {
               fontSize: '10px',
               fontWeight: 500,
               color: '#9CA3AF',
-              offsetY: -30,
               formatter: () => '',
             },
           },

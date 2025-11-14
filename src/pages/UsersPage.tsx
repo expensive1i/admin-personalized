@@ -6,6 +6,8 @@ import SideModal from '../components/SideModal'
 import ErrorDisplay from '../components/ErrorDisplay'
 import { getAllUsers, getUserById } from '../services/userService'
 import { type UserRecord, type ApiUser } from '../types/user'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { Add01Icon } from '@hugeicons/core-free-icons'
 
 function UsersPage() {
   const [users, setUsers] = useState<UserRecord[]>([])
@@ -64,7 +66,16 @@ function UsersPage() {
       />
 
       <div className="px-5 pt-10 pb-12">
-        <p className="text-base text-gray-600 mb-8">View, manage, and monitor all registered user accounts on the platform.</p>
+        <div className="flex items-center justify-between mb-8">
+          <p className="text-base text-gray-600">View, manage, and monitor all registered user accounts on the platform.</p>
+          <button
+            className="bg-[#E3000F] text-white px-6 py-2.5 flex items-center gap-2 hover:bg-[#C2000D] transition-colors font-medium text-sm"
+            style={{ borderRadius: 0 }}
+          >
+            <HugeiconsIcon icon={Add01Icon} className="w-5 h-5" />
+            <span>Add User</span>
+          </button>
+        </div>
 
         <section>
           {loading && <UserTableSkeleton />}

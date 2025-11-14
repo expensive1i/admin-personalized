@@ -8,6 +8,7 @@ export const ENDPOINTS = {
   USERS: {
     GET_ALL: '/api/users',
     GET_BY_ID: (id: string | number) => `/api/users/${id}`,
+    CREATE: '/api/users',
   },
 } as const
 

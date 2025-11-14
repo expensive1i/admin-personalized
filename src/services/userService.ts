@@ -1,6 +1,6 @@
 import apiRequest from './api'
 import { ENDPOINTS } from './endpoints'
-import type { GetUsersResponse, UserRecord, ApiUser } from '../types/user'
+import type { GetUsersResponse, UserRecord, ApiUser, CreateUserRequest, CreateUserResponse } from '../types/user'
 
 /**
  * Get all users from the API
